@@ -23,7 +23,7 @@ function media(req, res) {
     try {
       var rs = fs.createReadStream(file);
       rs.on('error', function(e) {
-        throw e;
+        res.error();
       });
       var parser = new musicmetadata(rs);
       parser.on('metadata', onmetadata);
