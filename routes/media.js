@@ -11,7 +11,7 @@ module.exports = media;
 
 function media(req, res) {
   // map the request to a file on the filesystem
-  var reqfile = decodeURI(req.urlparsed.pathname.replace('/media', ''));
+  var reqfile = decodeURI(req.urlparsed.pathname.replace('/media', '')).replace(/%23/g, '#');
   var file = path.join(process.cwd(), reqfile);
 
   var tags = req.urlparsed.query.tags === 'true';
@@ -78,6 +78,7 @@ function media(req, res) {
         res.statusCode = 304;
         res.end();
       } else {
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Content-Length', stats.size);
         res.setHeader('Content-Type', mime.lookup(file));
         res.setHeader('ETag', etag);
@@ -152,7 +153,7 @@ function createprettyhtml(stats) {
   var link = '<a href="%s">%s</a><br />\n';
   s = util.format(link, '../', '../');
   stats.forEach(function(stat) {
-    var url = '/media' + stat.filename;
+    var url = '/media' + stat.filename.replace(/#/g, '%23');
     var name = path.basename(stat.filename);
     if (stat.isdir) {
       url += '/';
