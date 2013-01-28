@@ -9,3 +9,4 @@ router.addRoute('/static/*?', _static);
 router.addRoute('/favicon.ico', _static);
 
 router.addRoute('/media/*?', require('./routes/media'));
+router.addRoute('/api/:action/:option?', require('./routes/api'));
