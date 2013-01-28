@@ -5,6 +5,8 @@ var util = require('util');
 var mime = require('mime');
 var musicmetadata = require('musicmetadata');
 
+var articlere = /^(the|a) /;
+
 module.exports = media;
 
 function media(req, res) {
@@ -20,8 +22,8 @@ function media(req, res) {
   if (tags || art) {
     try {
       var rs = fs.createReadStream(file);
-      rs.on('error', function() {
-        res.error();
+      rs.on('error', function(e) {
+        throw e;
       });
       var parser = new musicmetadata(rs);
       parser.on('metadata', onmetadata);
@@ -37,6 +39,7 @@ function media(req, res) {
       // just send the tags, no picture
       if (tags) {
         delete metadata.picture;
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.end(JSON.stringify(metadata));
         return;
       }
@@ -59,7 +62,11 @@ function media(req, res) {
 
   // the user wants some actual data
   fs.stat(file, function(err, stats) {
-    if (err) return res.error();
+    if (err) {
+      console.error(err.message);
+      res.error();
+      return;
+    }
 
     // let's dish them the file
     if (!stats.isDirectory()) {
@@ -91,9 +98,11 @@ function media(req, res) {
       if (json) {
         // just give the user some json
         s = JSON.stringify(ret);
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
       } else {
         // generate a pretty html page that can be navigated
         s = createprettyhtml(ret);
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
       }
       res.end(s);
     });
@@ -119,7 +128,20 @@ function statall(d, cb) {
           stats.isdir = stats.isDirectory();
           ret.push(stats);
         }
-        if (++i === dir.length) cb(null, ret);
+        if (++i === dir.length) {
+          // sort it
+          ret.sort(function(a, b) {
+            // dirs above files
+            if (a.isdir ^ b.isdir)
+              return a.isdir ? 1 : -1;
+
+            // sort alphabetically
+            var aname = path.basename(a.filename).toLowerCase().replace(articlere, '');
+            var bname = path.basename(b.filename).toLowerCase().replace(articlere, '');
+            return aname < bname ? -1 : 1;
+          });
+          cb(null, ret);
+        }
       });
     });
   });
@@ -127,7 +149,7 @@ function statall(d, cb) {
 
 // given an array of stats objects, return some pretty HTML
 function createprettyhtml(stats) {
-  var link = '<a href="%s">%s</a><br />';
+  var link = '<a href="%s">%s</a><br />\n';
   s = util.format(link, '../', '../');
   stats.forEach(function(stat) {
     var url = '/media' + stat.filename;
