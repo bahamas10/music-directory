@@ -1,0 +1,23 @@
+{
+  "name": "nobsmm",
+  "version": "0.0.0",
+  "description": "No bull-shit media manager",
+  "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": "",
+  "license": "MIT",
+  "dependencies": {
+    "log-timestamp": "0.0.5",
+    "access-log": "~0.1.1",
+    "routes": "~0.1.1",
+    "filed": "0.0.7",
+    "posix-getopt": "~1.0.0",
+    "latest": "~0.1.0",
+    "musicmetadata": "~0.2.0",
+    "mime": "~1.2.9"
+  }
+}
