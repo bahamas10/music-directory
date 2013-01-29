@@ -2,6 +2,9 @@ var getopt = require('posix-getopt');
 
 var package = require('../package.json');
 
+var host = '0.0.0.0';
+var port = 8080;
+
 /**
  * Usage
  *
@@ -15,8 +18,8 @@ function usage() {
     '',
     '-d, --dir <dir>       the music directory to expose, defaults to cwd',
     '-h, --help            print this message and exit',
-    '-H, --host <host>     the host to listen on, defaults to 0.0.0.0',
-    '-p, --port <port>     the port to listen on, defaults to :8080',
+    '-H, --host <host>     the host on which to listen, defaults to ' + host,
+    '-p, --port <port>     the port on which to listen, defaults to ' + port,
     '-u, --updates         check for available updates',
     '-v, --version         print the version number and exit'
   ].join('\n');
@@ -32,8 +35,6 @@ var options = [
   'v(version)'
 ].join('');
 var parser = new getopt.BasicParser(options, process.argv);
-var host = '0.0.0.0';
-var port = 8080;
 var dir;
 var option;
 while ((option = parser.getopt()) !== undefined) {
