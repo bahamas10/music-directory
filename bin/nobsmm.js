@@ -1,3 +1,11 @@
+#!/usr/bin/env node
+/**
+ * no bullshit media
+ *
+ * Author: Dave Eddy <dave@daveeddy.com>
+ * License: MIT
+ */
+
 var getopt = require('posix-getopt');
 
 var package = require('../package.json');
