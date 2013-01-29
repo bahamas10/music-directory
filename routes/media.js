@@ -152,7 +152,7 @@ function statall(d, cb) {
 function createprettyhtml(stats) {
   var s = '<!doctype html><html><head><link rel="stylesheet" href="/static/css/media.css" />';
   s += '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />';
-  s += '</head><body><div id="container">'
+  s += '</head><body><div id="container">';
 
   var link = '<a href="%s">%s</a>\n';
   s += util.format(link, '../', '../');
