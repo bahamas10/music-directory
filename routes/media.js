@@ -135,11 +135,15 @@ function statall(d, cb) {
           ret.sort(function(a, b) {
             // dirs above files
             if (a.isdir ^ b.isdir)
-              return a.isdir ? 1 : -1;
+              return a.isdir ? -1 : 1;
 
             // sort alphabetically
-            var aname = path.basename(a.filename).toLowerCase().replace(articlere, '');
-            var bname = path.basename(b.filename).toLowerCase().replace(articlere, '');
+            var aname = path.basename(a.filename).toLowerCase();
+            var bname = path.basename(b.filename).toLowerCase();
+            if (!a.isdir) {
+              aname = aname.replace(articlere, '');
+              bname = bname.replace(articlere, '');
+            }
             return aname < bname ? -1 : 1;
           });
           cb(null, ret);
