@@ -14,9 +14,10 @@ function media(req, res) {
   var reqfile = decodeURI(req.urlparsed.pathname.replace('/media', '')).replace(/%23/g, '#');
   var file = path.join(process.cwd(), reqfile);
 
-  var tags = req.urlparsed.query.tags === 'true';
   var art = req.urlparsed.query.art === 'true';
+  var bodyonly = req.urlparsed.query.bodyonly === 'true';
   var json = req.urlparsed.query.json === 'true';
+  var tags = req.urlparsed.query.tags === 'true';
 
   // the user wants tags or artwork, fire up musicmetadata
   if (tags || art) {
@@ -170,3 +171,5 @@ function createprettyhtml(stats) {
 
   return s;
 }
+
+
