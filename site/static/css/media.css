@@ -35,7 +35,8 @@ html, body {
 	text-decoration: none;
 	display: block;
 	border-bottom: 1px solid #999;
-	padding: 15px;
+	font-size: 10pt;
+	padding: 8px;
 }
 .column a.current {
 	background-color: #222;

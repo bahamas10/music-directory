@@ -49,11 +49,12 @@ function media(req, res) {
       if (art) {
         try {
           var pic = metadata.picture[0];
+          if (!pic) throw new Error('picture not present');
         } catch (e) {
           res.notfound();
           return;
         }
-        res.setHeader('Content-Type', 'image/' + pic.format);
+        res.setHeader('Content-Type', 'image/' + (pic.format || 'xyz'));
         res.end(pic.data);
       }
     }

@@ -31,7 +31,7 @@ function linkclick() {
   $this.addClass('current');
 
   if (isdir === false) {
-    // the link is a song, play it
+    // the link is a song or file
     $audio.attr('src', href);
     $audio[0].pause();
     $audio[0].play();
@@ -56,7 +56,7 @@ function linkclick() {
     viewstack.push($column);
     $column.data('num', viewstack.length);
     $container.append($column);
-    scroll(320);
+    scroll($column.width() * viewstack.length);
   });
 
   return false;
