@@ -53,6 +53,10 @@ function linkclick() {
   if (isdir === false) {
     // the link is a song or file
     play(href);
+
+    var data = cache.get(href);
+    if (data) loaddata(data);
+    else $.getJSON(href + '?tags=true', loaddata);
   } else if (isdir || json) {
     // request some json if it's not in the cache
     var data = cache.get(href);
@@ -85,7 +89,7 @@ function createcolumn(data) {
     $div.addClass('content');
     $div.html(data);
     $column.append($div);
-  } else {
+  } else if (data instanceof Array) {
     // loop the data and add the links
     for (var i in data) {
       var o = data[i];
@@ -100,7 +104,6 @@ function createcolumn(data) {
 
       $column.append($a);
     }
-
     // empty
     if (!data.length) {
       var $content = $(document.createElement('div'));
@@ -109,7 +112,14 @@ function createcolumn(data) {
       $column.append($content);
 
     }
+  } else {
+    // data is for album art
+    var $div = $(document.createElement('div'));
+    $div.addClass('content');
+    $div.html(data);
+    $column.append($div);
   }
+
 
   var $spacer = $(document.createElement('div'));
   $spacer.addClass('spacer');
@@ -184,4 +194,8 @@ function play(song) {
 
 function next() {
   play(++playlistpos);
+}
+
+function showfileinfo(file) {
+
 }
