@@ -1,55 +1,85 @@
-var findit = require('findit');
+var fs = require('fs');
+var path = require('path');
+
+var statall = require('../lib/statall');
 
 var recentcache = [];
-buildrecentcache();
+var songscache = [];
+buildcache();
 
 module.exports = api;
 
 function api(req, res, params) {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   switch (params.action) {
-    case 'recent': // recently added
+    case 'cache': // song cache
       if (params.option === 'rebuild') {
         // rebuild the cache and do nothing else
-        buildrecentcache(function() {
+        buildcache(function() {
           res.end();
         });
         return;
       }
 
+      res.end(JSON.stringify(songscache));
+      break;
+    case 'recent': // recently added
       // give them the recently added
       var limit = +params.option || 20;
       if (params.option === 'all') limit = recentcache.length;
       var ret = recentcache.slice(0, limit);
       res.end(JSON.stringify(ret));
-      return;
+      break;
     default:
       res.notfound();
-      return;
+      break;
   }
 }
 
 // create the recently added cache
-function buildrecentcache(cb) {
-  console.log('building recent cache...');
-  console.time('build recent cache');
+function buildcache(cb) {
+  console.log('building cache...');
+  console.time('build cache');
 
-  var finder = findit.find('.');
-  var dirs = [];
+  walk(process.cwd(), function(err, all) {
 
-  finder.on('directory', function(dir, stat) {
-    stat.filename = dir.slice(1);
-    stat.isdir = true;
-    dirs.push(stat);
-  });
+    var dirs = all.filter(function(a) {
+      return a.isdir;
+    });
+    var files = all.filter(function(a) {
+      return !a.isdir;
+    });
 
-  finder.on('end', function() {
     dirs.sort(function(a, b) {
       return a.mtime > b.mtime ? -1 : 1;
     });
-    console.timeEnd('build recent cache');
+    console.timeEnd('build cache');
 
     recentcache = dirs;
+    songscache = files;
     if (cb) cb();
   });
 }
+
+// taken from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
+function walk(dir, cb) {
+  var cwd = process.cwd();
+  var ret = [];
+  statall(dir, function(err, list) {
+    if (err) return cb(err);
+    var pending = list.length;
+    if (!pending) return cb(null, ret);
+    list.forEach(function(stat) {
+      if (stat.isdir) {
+        ret.push(stat);
+        walk(path.join(cwd, stat.filename), function(err, res) {
+          ret = ret.concat(res);
+          if (!--pending) cb(null, ret);
+        });
+      } else {
+        ret.push(stat);
+        if (!--pending) cb(null, ret);
+      }
+    });
+  });
+};

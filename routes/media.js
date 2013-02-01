@@ -5,6 +5,8 @@ var util = require('util');
 var mime = require('mime');
 var musicmetadata = require('musicmetadata');
 
+var statall = require('../lib/statall');
+
 var articlere = /^(the|a) /;
 
 module.exports = media;
@@ -112,54 +114,13 @@ function media(req, res) {
   });
 }
 
-// stat all files in a dir and return an array
-function statall(d, cb) {
-  var cwd = process.cwd();
-  fs.readdir(d, function(err, dir) {
-    if (err) return cb(err);
-
-    var ret = [];
-    var i = 0;
-    dir.forEach(function(f) {
-      var fullfile = path.join(d, f);
-      // the filename safe to give to the user without exposing
-      // system information
-      var safefile = fullfile.replace(cwd, '');
-      fs.stat(fullfile, function(e, stats) {
-        if (!e) {
-          stats.filename = safefile;
-          stats.isdir = stats.isDirectory();
-          ret.push(stats);
-        }
-        if (++i !== dir.length) return;
-        // sort it
-        ret.sort(function(a, b) {
-          // dirs above files
-          if (a.isdir ^ b.isdir)
-            return a.isdir ? -1 : 1;
-
-          // sort alphabetically
-          var aname = path.basename(a.filename).toLowerCase();
-          var bname = path.basename(b.filename).toLowerCase();
-          if (a.isdir) {
-            aname = aname.replace(articlere, '');
-            bname = bname.replace(articlere, '');
-          }
-          return aname < bname ? -1 : 1;
-        });
-        cb(null, ret);
-      });
-    });
-  });
-}
-
 // given an array of stats objects, return some pretty HTML
 function createprettyhtml(stats) {
   var s = '<!doctype html><html><head><link rel="stylesheet" href="/static/css/media.css" />';
   s += '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />';
   s += '</head><body><div id="container">';
 
-  var link = '<a href="%s">%s</a>\n';
+  var link = '<a href="%s">%s</a><br />\n';
   s += util.format(link, '../', '../');
   stats.forEach(function(stat) {
     var url = '/media' + stat.filename.replace(/#/g, '%23');
@@ -175,5 +136,3 @@ function createprettyhtml(stats) {
 
   return s;
 }
-
-
