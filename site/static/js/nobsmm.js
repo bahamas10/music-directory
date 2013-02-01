@@ -1,5 +1,7 @@
 var $container, $footer, $audio;
 var viewstack = [];
+var playlist = [];
+var playlistpos = -1;
 var cache = new BasicCache({debug: true});
 
 $(document).ready(function() {
@@ -12,8 +14,19 @@ $(document).ready(function() {
   // override all linksss
   $container.on('click', '.column a', linkclick);
 
+  // load the playlist
+  $.getJSON('/api/cache', function(data) {
+    playlist = data;
+  });
+
   // load the hash
   loadlocation(window.location.hash);
+
+  $audio.on('ended', next);
+  $audio.on('error', function(e) {
+    console.log(e);
+    next();
+  });
 });
 
 /**
@@ -36,10 +49,7 @@ function linkclick() {
 
   if (isdir === false) {
     // the link is a song or file
-    document.title = basename(href);
-    $audio.attr('src', href);
-    $audio[0].pause();
-    $audio[0].play();
+    play(href);
   } else if (isdir || json) {
     // request some json if it's not in the cache
     var data = cache.get(href);
@@ -149,4 +159,23 @@ function loadlocation(loc) {
       $(document).ajaxStop(function() { docolumn(++i); });
     });
   }
+}
+
+function play(song) {
+  if (typeof song === 'number')
+    song = '/media' + playlist[song];
+  else if (typeof song === 'string')
+    playlistpos = playlist.indexOf(song.replace('/media', ''));
+  else
+    return;
+
+  document.title = basename(song);
+  $audio.attr('src', song);
+  console.log('song ' + playlistpos + ' of ' + playlist.length);
+  $audio[0].pause();
+  $audio[0].play();
+}
+
+function next() {
+  play(++playlistpos);
 }

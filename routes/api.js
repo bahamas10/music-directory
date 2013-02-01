@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 
 var statall = require('../lib/statall');
+var sort = require('../lib/sort');
 
 var recentcache = [];
 var songscache = [];
@@ -53,7 +54,12 @@ function buildcache(cb) {
     dirs.sort(function(a, b) {
       return a.mtime > b.mtime ? -1 : 1;
     });
+    files = files.map(function(a) {
+      return a.filename;
+    });
     console.timeEnd('build cache');
+
+    files.sort(sort.sortnames);
 
     recentcache = dirs;
     songscache = files;
@@ -65,7 +71,7 @@ function buildcache(cb) {
 function walk(dir, cb) {
   var cwd = process.cwd();
   var ret = [];
-  statall(dir, function(err, list) {
+  statall(dir, false, function(err, list) {
     if (err) return cb(err);
     var pending = list.length;
     if (!pending) return cb(null, ret);
