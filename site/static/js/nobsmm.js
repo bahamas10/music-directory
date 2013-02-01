@@ -1,6 +1,6 @@
 var $container, $footer, $audio;
 var viewstack = [];
-var cache = new Cache({debug:true});
+var cache = new BasicCache({debug: true});
 
 $(document).ready(function() {
   $('.column').data('num', 0);
