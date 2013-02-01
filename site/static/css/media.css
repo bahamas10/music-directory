@@ -8,38 +8,43 @@ html, body {
 	color: #ededed;
 	/*font-family: monospace, sans-serif;*/
 	font-family: sans-serif;
-	font-size: 12pt;
+	font-size: 10pt;
 	height: 100%;
 	/*width: 100%;*/
 	min-width: 320px;
 }
 
 #container {
+	float: left;
 	height: 100%;
 	white-space: nowrap;
-	float: left;
 	min-width: 320px;
 }
 
 .column {
 	float: left;
+	border-right: 1px solid #aaa;
 	height: 100%;
 	width: 320px;
-	border-right: 1px solid #aaa;
 	overflow-y: auto;
 	overflow-x: hidden;
+	text-overflow: ellipsis;
 }
 
 .column a {
+	position: relative;
+	display: block;
+	padding: 8px;
+	border-bottom: 1px solid #999;
 	color: #dcdcdc;
 	text-decoration: none;
-	display: block;
-	border-bottom: 1px solid #999;
-	font-size: 10pt;
-	padding: 8px;
 }
 .column a.current {
 	background-color: #222;
+}
+
+.column .content {
+	padding: 8px;
 }
 
 .spacer {
@@ -60,4 +65,18 @@ html, body {
 
 #audio {
 	width: 100%;
+}
+
+.arrow:before {
+	position: absolute;
+	right: 8px;
+	content: '\2192';
+}
+
+/* convenience */
+.float-left {
+	float: left;
+}
+.float-right {
+	float: right;
 }

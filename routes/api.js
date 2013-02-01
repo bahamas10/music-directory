@@ -39,6 +39,7 @@ function buildrecentcache(cb) {
 
   finder.on('directory', function(dir, stat) {
     stat.filename = dir.slice(1);
+    stat.isdir = true;
     dirs.push(stat);
   });
 

@@ -23,8 +23,11 @@ function linkclick() {
 
   var href= $this.attr('href');
   var isdir = $this.data('isdir');
-  var ispage = $this.hasClass('link');
+  var json = $this.attr('data-json');
   var $parent = $this.parent();
+  var num = $parent.data('num');
+
+  window.location.hash = href
 
   // clear highlighted nodes and highlight the clicked on
   $parent.find('a').removeClass('current');
@@ -35,31 +38,21 @@ function linkclick() {
     $audio.attr('src', href);
     $audio[0].pause();
     $audio[0].play();
-    return false;
-  } else if (ispage) {
-    // the link is a normal link, send it through
-    return true;
+  } else if (isdir || json) {
+    // request some json
+    $.getJSON(href + '?json=true', loaddata);
+  } else {
+    // no one knows what this is, let's just get it i guess
+    $.get(href, loaddata);
   }
 
-  // the link should be treated like a directory if it makes it this far
-  $.getJSON(href + '?json=true', function(data) {
-    var $column = createcolumn(data);
-
-    // pop off some columns from the stack
-    var num = $parent.data('num');
-    var slice = viewstack.length - num;
-    for (var i = 0; i < slice; i++) {
-      viewstack.pop().remove();
-    }
-
-    // push the last column onto the stack
-    viewstack.push($column);
-    $column.data('num', viewstack.length);
-    $container.append($column);
-    scroll($column.width() * viewstack.length);
-  });
-
   return false;
+
+  // callback for async requests
+  function loaddata(data) {
+    var $column = createcolumn(data);
+    addcolumn($column, num);
+  }
 }
 
 /**
@@ -69,15 +62,33 @@ function createcolumn(data) {
   var $column = $(document.createElement('div'));
   $column.addClass('column');
 
-  // loop the data and add the links
-  for (var i in data) {
-    var o = data[i];
-    var $a = $(document.createElement('a'));
-    $a.attr('href', '/media' + o.filename);
-    $a.data('isdir', o.isdir);
-    $a.text(o.filename.replace(/^.*\//g, ''));
-    $a.attr('title', $a.text());
-    $column.append($a);
+  if (typeof data === 'string') {
+    $column.html(data);
+  } else {
+    // loop the data and add the links
+    for (var i in data) {
+      var o = data[i];
+      var $a = $(document.createElement('a'));
+      $a.attr('href', '/media' + o.filename);
+      $a.data('isdir', o.isdir);
+      $a.text(basename(o.filename));
+      $a.attr('title', $a.text());
+
+      // dirs have arrows
+      if (o.isdir) $a.addClass('arrow');
+
+      $column.append($a);
+      console.log('appended');
+    }
+
+    // empty
+    if (!data.length) {
+      var $content = $(document.createElement('div'));
+      $content.addClass('content');
+      $content.text('(empty)');
+      $column.append($content);
+
+    }
   }
 
   var $spacer = $(document.createElement('div'));
@@ -85,4 +96,26 @@ function createcolumn(data) {
   $column.append($spacer);
 
   return $column;
+}
+
+/**
+ * add a column div and handle the stack
+ */
+function addcolumn($column, num) {
+  // pop off some columns from the stack
+  var slice = viewstack.length - num;
+  for (var i = 0; i < slice; i++) {
+    viewstack.pop().remove();
+  }
+
+  // push the last column onto the stack
+  viewstack.push($column);
+  $column.data('num', viewstack.length);
+  $container.append($column);
+  scroll($column.width() * viewstack.length);
+}
+
+// ghetto basename
+function basename(s) {
+  return s.replace(/^.*\//g, '');
 }
