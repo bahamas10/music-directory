@@ -25,7 +25,10 @@ $(document).ready(function() {
   $audio.on('ended', next);
   $audio.on('error', function(e) {
     console.log(e);
-    next();
+  });
+
+  $('#right-arrow').click(function() {
+    loadlocation(dirname($audio.attr('src')));
   });
 });
 
@@ -132,9 +135,12 @@ function addcolumn($column, num) {
   scroll($column.width() * viewstack.length);
 }
 
-// ghetto basename
+// ghetto basename & dirname
 function basename(s) {
   return s.replace(/^.*\//g, '');
+}
+function dirname(s) {
+  return s.replace(/\/[^\/]+$/, '');
 }
 
 // load location
@@ -156,6 +162,7 @@ function loadlocation(loc) {
       this.scrollIntoView();
       // defer action
       $this.trigger('click');
+      if (!$.active) return docolumn(++i);
       $(document).ajaxStop(function() { docolumn(++i); });
     });
   }

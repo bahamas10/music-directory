@@ -21,6 +21,11 @@ html, body {
 	min-width: 320px;
 }
 
+a {
+	text-decoration: none;
+	cursor: pointer;
+}
+
 .column {
 	float: left;
 	border-right: 1px solid #aaa;
@@ -37,8 +42,6 @@ html, body {
 	padding: 8px;
 	border-bottom: 1px solid #999;
 	color: #dcdcdc;
-	text-decoration: none;
-	cursor: pointer;
 }
 .column a.current {
 	background-color: #333;
