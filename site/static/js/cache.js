@@ -3,6 +3,10 @@ function Cache(opts) {
   this.cache = {};
 }
 
+/**
+ * get an item from the cache, returns `undefined`
+ * if not found
+ */
 Cache.prototype.get = function(key) {
   var d = Date.now();
   if (this.cache[key] === undefined) {
@@ -20,6 +24,11 @@ Cache.prototype.get = function(key) {
   return this.cache[key].value;
 };
 
+/**
+ * set an item in the cache
+ *
+ * expires defaults to 5 minutes
+ */
 Cache.prototype.set = function(key, value, expires) {
   var invalid = Date.now() + (expires || 5*60*1000);
   this.cache[key] = {};
@@ -28,6 +37,16 @@ Cache.prototype.set = function(key, value, expires) {
   return this.cache[key].invalid;
 };
 
+/**
+ * remove an item from the cach
+ */
+Cache.prototype.remove = function(key) {
+  delete this.cache[key];
+};
+
+/**
+ * internal debug function
+ */
 Cache.prototype.debug = function() {
   if (this.opts.debug) console.log.apply(console, arguments);
 };
