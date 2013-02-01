@@ -50,18 +50,21 @@ function buildcache(cb) {
       return !a.isdir;
     });
 
+    // sort the dirs by mtime
     dirs.sort(function(a, b) {
       return a.mtime > b.mtime ? -1 : 1;
     });
+
+    // sort the files with lib/sort
     files = files.map(function(a) {
       return a.filename;
     });
-    console.timeEnd('build cache');
-
     files.sort(sort.sortnames);
 
     recentcache = dirs;
     songscache = files;
+
+    console.timeEnd('build cache');
     if (cb) cb();
   });
 }
