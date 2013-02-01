@@ -11,8 +11,8 @@ $(document).ready(function() {
   // override all linksss
   $container.on('click', '.column a', linkclick);
 
-  // audio html5 audio
-  $footer.append($audio);
+  // load the hash
+  loadlocation(window.location.hash);
 });
 
 /**
@@ -35,6 +35,7 @@ function linkclick() {
 
   if (isdir === false) {
     // the link is a song or file
+    document.title = basename(href);
     $audio.attr('src', href);
     $audio[0].pause();
     $audio[0].play();
@@ -78,7 +79,6 @@ function createcolumn(data) {
       if (o.isdir) $a.addClass('arrow');
 
       $column.append($a);
-      console.log('appended');
     }
 
     // empty
@@ -118,4 +118,28 @@ function addcolumn($column, num) {
 // ghetto basename
 function basename(s) {
   return s.replace(/^.*\//g, '');
+}
+
+// load location
+function loadlocation(loc) {
+  if (!loc) return;
+  var parts = loc.split('/').slice(1);
+
+  docolumn(0);
+
+  function docolumn(i) {
+    if (i === parts.length || !parts[i]) return;
+    var dir = parts[i];
+
+    $('.column').eq(i).find('a').each(function() {
+      var $this = $(this);
+      var text = $this.text();
+      if (text !== dir) return;
+
+      this.scrollIntoView();
+      // defer action
+      $this.trigger('click');
+      $(document).ajaxStop(function() { docolumn(++i); });
+    });
+  }
 }
