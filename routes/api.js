@@ -1,4 +1,3 @@
-var fs = require('fs');
 var path = require('path');
 
 var statall = require('../lib/statall');
@@ -88,4 +87,4 @@ function walk(dir, cb) {
       }
     });
   });
-};
+}

@@ -7,8 +7,6 @@ var musicmetadata = require('musicmetadata');
 
 var statall = require('../lib/statall');
 
-var articlere = /^(the|a) /;
-
 module.exports = media;
 
 function media(req, res) {
@@ -17,7 +15,6 @@ function media(req, res) {
   var file = path.join(process.cwd(), reqfile);
 
   var art = req.urlparsed.query.art === 'true';
-  var bodyonly = req.urlparsed.query.bodyonly === 'true';
   var json = req.urlparsed.query.json === 'true';
   var tags = req.urlparsed.query.tags === 'true';
 
@@ -25,7 +22,7 @@ function media(req, res) {
   if (tags || art) {
     try {
       var rs = fs.createReadStream(file);
-      rs.on('error', function(e) {
+      rs.on('error', function() {
         res.error();
       });
       var parser = new musicmetadata(rs);
@@ -49,8 +46,9 @@ function media(req, res) {
 
       // send the art only if present
       if (art) {
+        var pic;
         try {
-          var pic = metadata.picture[0];
+          pic = metadata.picture[0];
           if (!pic) throw new Error('picture not present');
         } catch (e) {
           res.notfound();
