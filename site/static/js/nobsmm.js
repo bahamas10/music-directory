@@ -168,7 +168,6 @@ function play(song) {
     playlistpos = playlist.indexOf(song.replace('/media', ''));
   else
     return;
-
   document.title = basename(song);
   $audio.attr('src', song);
   console.log('song ' + playlistpos + ' of ' + playlist.length);
