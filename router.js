@@ -10,3 +10,6 @@ router.addRoute('/favicon.ico', _static);
 
 router.addRoute('/media/*?', require('./routes/media'));
 router.addRoute('/api/:action/:option?', require('./routes/api'));
+
+router.addRoute('/about', require('./routes/about'));
+router.addRoute('/system', require('./routes/system'));

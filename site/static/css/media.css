@@ -5,7 +5,7 @@ html, body {
 	border: none;
 	box-sizing: border-box;
 	background-color: #111;
-	color: #ededed;
+	color: #dcdcdc;
 	/*font-family: monospace, sans-serif;*/
 	font-family: sans-serif;
 	font-size: 10pt;
@@ -40,7 +40,7 @@ html, body {
 	text-decoration: none;
 }
 .column a.current {
-	background-color: #222;
+	background-color: #333;
 }
 
 .column .content {
@@ -71,6 +71,16 @@ html, body {
 	position: absolute;
 	right: 8px;
 	content: '\2192';
+}
+
+pre {
+	overflow-x: auto;
+	white-space: normal;
+	line-height: 2;
+}
+
+.dark {
+	color: #777;
 }
 
 /* convenience */

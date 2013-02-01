@@ -1,5 +1,6 @@
 var $container, $footer, $audio;
 var viewstack = [];
+var cache = new Cache({debug:true});
 
 $(document).ready(function() {
   $('.column').data('num', 0);
@@ -40,8 +41,10 @@ function linkclick() {
     $audio[0].pause();
     $audio[0].play();
   } else if (isdir || json) {
-    // request some json
-    $.getJSON(href + '?json=true', loaddata);
+    // request some json if it's not in the cache
+    var data = cache.get(href);
+    if (data) loaddata(data);
+    else $.getJSON(href + '?json=true', loaddata);
   } else {
     // no one knows what this is, let's just get it i guess
     $.get(href, loaddata);
@@ -51,6 +54,7 @@ function linkclick() {
 
   // callback for async requests
   function loaddata(data) {
+    cache.set(href, data);
     var $column = createcolumn(data);
     addcolumn($column, num);
   }
@@ -64,7 +68,10 @@ function createcolumn(data) {
   $column.addClass('column');
 
   if (typeof data === 'string') {
-    $column.html(data);
+    var $div = $(document.createElement('div'));
+    $div.addClass('content');
+    $div.html(data);
+    $column.append($div);
   } else {
     // loop the data and add the links
     for (var i in data) {
