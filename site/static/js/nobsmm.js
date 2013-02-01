@@ -22,7 +22,7 @@ $(document).ready(function() {
 function linkclick() {
   var $this = $(this);
 
-  var href= $this.attr('href');
+  var href= $this.attr('href') || $this.attr('data-href');
   var isdir = $this.data('isdir');
   var json = $this.attr('data-json');
   var $parent = $this.parent();
@@ -77,7 +77,7 @@ function createcolumn(data) {
     for (var i in data) {
       var o = data[i];
       var $a = $(document.createElement('a'));
-      $a.attr('href', '/media' + o.filename);
+      $a.attr('data-href', '/media' + o.filename);
       $a.data('isdir', o.isdir);
       $a.text(basename(o.filename));
       $a.attr('title', $a.text());

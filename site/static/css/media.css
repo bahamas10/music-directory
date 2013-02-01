@@ -38,6 +38,7 @@ html, body {
 	border-bottom: 1px solid #999;
 	color: #dcdcdc;
 	text-decoration: none;
+	cursor: pointer;
 }
 .column a.current {
 	background-color: #333;
