@@ -36,7 +36,7 @@ a {
 	text-overflow: ellipsis;
 }
 
-.column a {
+.column a, .chooser a {
 	position: relative;
 	display: block;
 	padding: 8px;
@@ -44,7 +44,7 @@ a {
 	color: #dcdcdc;
 
 }
-.column a.current {
+.current {
 	background-color: #333;
 }
 
@@ -98,6 +98,20 @@ pre {
 
 blockquote, .dark {
 	color: #777;
+}
+
+ul {
+	list-style: none;
+}
+
+#footer ul li {
+	cursor: pointer;
+}
+
+.chooser {
+	float: left;
+	width: 120px;
+	margin: 20px;
 }
 
 /* convenience */

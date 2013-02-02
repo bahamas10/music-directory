@@ -7,11 +7,11 @@ html, body {
 	border-right: 1px solid #aaa;
 }
 
-.column a {
+.column a, .chooser a {
 	border-bottom: 1px solid #999;
 	color: #dcdcdc;
 }
-.column a.current {
+.current {
 	background-color: #333;
 }
 

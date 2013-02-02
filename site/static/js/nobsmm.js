@@ -1,12 +1,13 @@
 var $container, $footer, $audio, $body;
 var $opennowplaying;
 var $pullmenu;
+var $csstheme, $csssize;
 
 var viewstack = [];
 var playlist = [];
 var playlistpos = -1;
 
-var footerheight = 300;
+var footerheight = 200;
 
 var cache = new BasicCache();
 
@@ -20,11 +21,13 @@ $(document).ready(function() {
   $('.column').data('num', 0);
 
   $audio = $('#audio');
+  $body = $('body');
   $container = $('#container');
+  $csssize = $('#css-size');
+  $csstheme = $('#css-theme');
   $footer = $('#footer');
   $opennowplaying = $('#footer .open-now-playing');
   $pullmenu = $('#footer .pull-menu');
-  $body = $('body');
 
   // override all linksss
   $container.on('click', '.column a', linkclick);
@@ -44,6 +47,7 @@ $(document).ready(function() {
     debug(e);
   });
 
+  // the pull down/up menu for the footer
   $pullmenu.click(function() {
     var $this = $(this);
     var isup = $this.hasClass('up');
@@ -60,11 +64,28 @@ $(document).ready(function() {
       }
     });
   });
+
+  // the now playing button
   $opennowplaying.click(function() {
     debug('right arrow');
     loadlocation($audio.attr('src'));
   });
+
+  // theme and size chooser
+  $('#footer .css-size a').click(_themeclick('css-size'));
+  $('#footer .css-theme a').click(_themeclick('css-theme'));
 });
+
+// theme and size callback
+function _themeclick(type) {
+  return function() {
+    var $this = $(this);
+    $this.parent().find('a').removeClass('current');
+    $this.addClass('current');
+    var $elem = type === 'css-size' ? $csssize : $csstheme;
+    $elem.attr('href', '/static/css/' + $this.text() + '.css');
+  };
+}
 
 // play the song on dbl click
 function dbllinkclick() {
