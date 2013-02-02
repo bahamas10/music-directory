@@ -1,0 +1,25 @@
+html, body {
+	background-color: #eee;
+	color: #111;
+}
+
+.column {
+	border-right: 1px solid #555;
+}
+
+.column a {
+	border-bottom: 1px solid #555;
+	color: #111;
+}
+.column a.current {
+	background-color: #ccc;
+}
+
+#footer {
+	background-color: #eee;
+	border-top: 1px solid #555;
+}
+
+blockquote, .dark {
+	color: #777;
+}
