@@ -67,14 +67,27 @@ a {
 	white-space: nowrap;
 }
 
+#footer .pull-menu {
+	position: absolute;
+	left: 0;
+}
+#footer .open-now-playing {
+	position: absolute;
+	right: 0;
+}
+
 #audio {
-	width: 100%;
+	margin-left: 40px;
+/*	width: 100%;*/
 }
 
 .arrow:before {
 	position: absolute;
 	right: 8px;
 	content: '\2192';
+}
+.big-arrow {
+	font-size: 25pt;
 }
 
 pre {

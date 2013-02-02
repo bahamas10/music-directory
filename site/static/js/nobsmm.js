@@ -1,5 +1,5 @@
 var $container, $footer, $audio, $body;
-var $rightarrow;
+var $opennowplaying;
 var $pullmenu;
 
 var viewstack = [];
@@ -22,7 +22,7 @@ $(document).ready(function() {
   $audio = $('#audio');
   $container = $('#container');
   $footer = $('#footer');
-  $rightarrow = $('#right-arrow');
+  $opennowplaying = $('#footer .open-now-playing');
   $pullmenu = $('#footer .pull-menu');
   $body = $('body');
 
@@ -47,17 +47,19 @@ $(document).ready(function() {
     var $this = $(this);
     var isup = $this.hasClass('up');
 
-    $footer.animate({height: (isup ? '+=' : '-=') + footerheight + 'px'}, 'slow', function() {
+    var opts = {height: (isup ? '+=' : '-=') + footerheight + 'px'};
+    console.log(opts);
+    $footer.animate(opts, 'slow', function() {
       if (isup) {
         $this.removeClass('up').addClass('down');
-        $this.html('&darr;');
+        $this.text('down');
       } else {
         $this.removeClass('down').addClass('up');
-        $this.html('&uarr;');
+        $this.text('up');
       }
     });
   });
-  $rightarrow.click(function() {
+  $opennowplaying.click(function() {
     debug('right arrow');
     loadlocation($audio.attr('src'));
   });
