@@ -2,10 +2,12 @@ var fs = require('fs');
 var path = require('path');
 var util = require('util');
 
+var ejs = require('ejs');
 var mime = require('mime');
 var musicmetadata = require('musicmetadata');
 
 var statall = require('../lib/statall');
+var infotemplate = fs.readFileSync(path.join(__dirname, '../templates/info.ejs'), 'utf-8');
 
 module.exports = media;
 
@@ -17,9 +19,10 @@ function media(req, res) {
   var art = req.urlparsed.query.art === 'true';
   var json = req.urlparsed.query.json === 'true';
   var tags = req.urlparsed.query.tags === 'true';
+  var info = req.urlparsed.query.info === 'true';
 
   // the user wants tags or artwork, fire up musicmetadata
-  if (tags || art) {
+  if (tags || art || info) {
     try {
       var rs = fs.createReadStream(file);
       rs.on('error', function() {
@@ -36,11 +39,22 @@ function media(req, res) {
 
     // music metadata callback
     function onmetadata(metadata) {
+      metadata.request = req.urlparsed.pathname;
+      metadata.basename = path.basename(req.urlparsed.pathname);
+      metadata.haspicture = Object.keys(metadata.picture).length ? true : false;
+
       // just send the tags, no picture
       if (tags) {
-        metadata.picture = Object.keys(metadata.picture).length ? true : false;
+        delete metadata.picture;
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.end(JSON.stringify(metadata));
+        return;
+      }
+
+      // html info in ejs format
+      if (info) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.end(ejs.render(infotemplate, metadata));
         return;
       }
 

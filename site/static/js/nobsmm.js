@@ -19,7 +19,7 @@ $(document).ready(function() {
   $audio = $('#audio');
   $container = $('#container');
   $footer = $('#footer');
-  $rightarrow = $('#rightarrow');
+  $rightarrow = $('#right-arrow');
 
   // override all linksss
   $container.on('click', '.column a', linkclick);
@@ -40,7 +40,7 @@ $(document).ready(function() {
 
   $rightarrow.click(function() {
     debug('right arrow');
-    loadlocation(dirname($audio.attr('src')));
+    loadlocation($audio.attr('src'));
   });
 });
 
@@ -72,13 +72,17 @@ function linkclick() {
 
   // figure out what to do with the clicked linked
   var type = isdir ? 'dir' : isfile ? 'file' : 'link';
-  var url;
   debug('click: %s', type);
   switch (type) {
     case 'file':
-      url = href + '?tags=true';
+      var url = href + '?info=true';
+
+      var data = cache.get(href);
+      if (data) addcolumn(data, num);
+      else $.get(url, loaddata);
+      break;
     case 'dir':
-      url = url || (href + '?json=true');
+      var url = href + '?json=true';
 
       // check the cache first
       var data = cache.get(href);
@@ -130,20 +134,6 @@ function createcolumn(data, type, href) {
         $content.text('(empty)');
         $column.append($content);
       }
-      break;
-    case 'file':
-      // show the fileinfo pane
-      var $div = $(document.createElement('div'));
-      $div.addClass('content');
-      if (data.picture) {
-        var $img = $(document.createElement('img'));
-        $img.attr('src', href + '?art=true');
-        $img.width(200);
-        $img.height(200);
-        $div.append($img);
-      }
-
-      $column.append($div);
       break;
     default:
       var $div = $(document.createElement('div'));

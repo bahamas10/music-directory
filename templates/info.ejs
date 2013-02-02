@@ -1,0 +1,23 @@
+<% if (haspicture) { %>
+<div style="text-align: center">
+<img src="<%= request %>?art=true" width="300" height="300px"></img>
+</div>
+<% } %>
+
+<pre>
+<% if (title) { %>
+
+<%= title %><br />
+<span class="dark">by:</span> <%= artist[0] %>
+<% if (album) { %>
+<span class="dark">on:</span> <%= album %> <% if (year) { %><span class="dark">(</span><%= year %><span class="dark">)</span><% } %>
+<br />
+
+<% } %>
+
+<% } else { %>
+
+<%= basename %>
+
+<% } %>
+</pre>
