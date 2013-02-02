@@ -29,6 +29,7 @@ $(document).ready(function() {
   // override all linksss
   $container.on('click', '.column a', linkclick);
   $container.on('dblclick', '.column a', dbllinkclick);
+  $container.on('touchstart', '.column a', dbllinkclick);
 
   // load the playlist
   $.getJSON('/api/cache', function(data) {
