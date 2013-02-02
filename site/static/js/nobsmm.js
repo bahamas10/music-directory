@@ -1,15 +1,25 @@
 var $container, $footer, $audio;
+var $rightarrow;
+
 var viewstack = [];
 var playlist = [];
 var playlistpos = -1;
-var cache = new BasicCache({debug: true});
+
+var cache = new BasicCache();
+
+var verbose = true;
+
+function debug() {
+  if (verbose) console.log.apply(console, arguments);
+}
 
 $(document).ready(function() {
   $('.column').data('num', 0);
 
+  $audio = $('#audio');
   $container = $('#container');
   $footer = $('#footer');
-  $audio = $('#audio');
+  $rightarrow = $('#rightarrow');
 
   // override all linksss
   $container.on('click', '.column a', linkclick);
@@ -24,10 +34,11 @@ $(document).ready(function() {
 
   $audio.on('ended', next);
   $audio.on('error', function(e) {
-    console.log(e);
+    debug(e);
   });
 
-  $('#right-arrow').click(function() {
+  $rightarrow.click(function() {
+    debug('right arrow');
     loadlocation(dirname($audio.attr('src')));
   });
 });
@@ -39,40 +50,46 @@ function linkclick() {
   var $this = $(this);
 
   var href= $this.attr('href') || $this.attr('data-href');
-  var isdir = $this.data('isdir');
-  var json = $this.attr('data-json');
+  var isdir = $this.attr('data-isdir') === 'true';
+  var isfile = $this.attr('data-isdir') === 'false';
+
   var $parent = $this.parent();
   var num = $parent.data('num');
 
-  window.location.hash = href
+  // update the window hash
+  window.location.hash = href;
 
   // clear highlighted nodes and highlight the clicked on
   $parent.find('a').removeClass('current');
   $this.addClass('current');
 
-  if (isdir === false) {
-    // the link is a song or file
-    play(href);
+  // figure out what to do with the clicked linked
+  var type = isdir ? 'dir' : isfile ? 'file' : 'link';
+  var url;
+  debug('click: %s', type);
+  switch (type) {
+    case 'file':
+      play(href);
+      url = href + '?tags=true';
+    case 'dir':
+      url = url || (href + '?json=true');
 
-    var data = cache.get(href);
-    if (data) loaddata(data);
-    else $.getJSON(href + '?tags=true', loaddata);
-  } else if (isdir || json) {
-    // request some json if it's not in the cache
-    var data = cache.get(href);
-    if (data) loaddata(data);
-    else $.getJSON(href + '?json=true', loaddata);
-  } else {
-    // no one knows what this is, let's just get it i guess
-    $.get(href, loaddata);
+      // check the cache first
+      var data = cache.get(href);
+      if (data) addcolumn(data, num);
+      else $.getJSON(url, loaddata);
+      break;
+    default:
+      $.get(href, loaddata);
+      break;
   }
 
   return false;
 
-  // callback for async requests
+  // callback for async ajax reqs
   function loaddata(data) {
-    cache.set(href, data);
-    var $column = createcolumn(data);
+    var $column = createcolumn(data, type, href);
+    cache.set(href, $column);
     addcolumn($column, num);
   }
 }
@@ -80,46 +97,55 @@ function linkclick() {
 /**
  * create a column of readdir info to pop onto the stack
  */
-function createcolumn(data) {
+function createcolumn(data, type, href) {
   var $column = $(document.createElement('div'));
   $column.addClass('column');
 
-  if (typeof data === 'string') {
-    var $div = $(document.createElement('div'));
-    $div.addClass('content');
-    $div.html(data);
-    $column.append($div);
-  } else if (data instanceof Array) {
-    // loop the data and add the links
-    for (var i in data) {
-      var o = data[i];
-      var $a = $(document.createElement('a'));
-      $a.attr('data-href', '/media' + o.filename);
-      $a.data('isdir', o.isdir);
-      $a.text(basename(o.filename));
-      $a.attr('title', $a.text());
+  switch (type) {
+    case 'dir':
+      // loop the data and add the links
+      for (var i in data) {
+        var o = data[i];
+        var $a = $(document.createElement('a'));
+        $a.attr('data-href', '/media' + o.filename);
+        $a.attr('data-isdir', o.isdir);
+        $a.text(basename(o.filename));
+        $a.attr('title', $a.text());
 
-      // dirs have arrows
-      if (o.isdir) $a.addClass('arrow');
+        // dirs have arrows
+        if (o.isdir) $a.addClass('arrow');
 
-      $column.append($a);
-    }
-    // empty
-    if (!data.length) {
-      var $content = $(document.createElement('div'));
-      $content.addClass('content');
-      $content.text('(empty)');
-      $column.append($content);
+        $column.append($a);
+      }
+      // empty
+      if (!data.length) {
+        var $content = $(document.createElement('div'));
+        $content.addClass('content');
+        $content.text('(empty)');
+        $column.append($content);
+      }
+      break;
+    case 'file':
+      // show the fileinfo pane
+      var $div = $(document.createElement('div'));
+      $div.addClass('content');
+      if (data.picture) {
+        var $img = $(document.createElement('img'));
+        $img.attr('src', href + '?art=true');
+        $img.width(200);
+        $img.height(200);
+        $div.append($img);
+      }
 
-    }
-  } else {
-    // data is for album art
-    var $div = $(document.createElement('div'));
-    $div.addClass('content');
-    $div.html(data);
-    $column.append($div);
+      $column.append($div);
+      break;
+    default:
+      var $div = $(document.createElement('div'));
+      $div.addClass('content');
+      $div.html(data);
+      $column.append($div);
+      break;
   }
-
 
   var $spacer = $(document.createElement('div'));
   $spacer.addClass('spacer');
@@ -135,7 +161,10 @@ function addcolumn($column, num) {
   // pop off some columns from the stack
   var slice = viewstack.length - num;
   for (var i = 0; i < slice; i++) {
-    viewstack.pop().remove();
+    var $oldcol = viewstack.pop();
+    $oldcol.find('a').removeClass('current');
+    debug('removing column num %d', viewstack.length + 1);
+    $oldcol.remove();
   }
 
   // push the last column onto the stack
@@ -143,6 +172,7 @@ function addcolumn($column, num) {
   $column.data('num', viewstack.length);
   $container.append($column);
   scroll($column.width() * viewstack.length);
+  debug('pushing num %d onto stack', viewstack.length);
 }
 
 // ghetto basename & dirname
@@ -156,24 +186,35 @@ function dirname(s) {
 // load location
 function loadlocation(loc) {
   if (!loc) return;
+  debug('loadlocation = %s', loc);
   var parts = loc.split('/').slice(1);
+  debug(parts.length);
 
   docolumn(0);
 
   function docolumn(i) {
-    if (i === parts.length || !parts[i]) return;
+    if (i >= parts.length || !parts[i]) return;
+    debug('doculumn(%d)', i);
     var dir = parts[i];
 
     $('.column').eq(i).find('a').each(function() {
       var $this = $(this);
       var text = $this.text();
       if (text !== dir) return;
+      debug('text = %s', dir);
 
       this.scrollIntoView();
       // defer action
       $this.trigger('click');
-      if (!$.active) return docolumn(++i);
-      $(document).ajaxStop(function() { docolumn(++i); });
+      if (!$.active) {
+        return docolumn(i+1);
+      } else {
+        debug('ajax was active, appending an ajax stop');
+        $(document).one('ajaxStop', function() {
+          debug('ajaxStop for docolumn(%d)', i);
+          docolumn(i+1);
+        });
+      }
     });
   }
 }
@@ -187,7 +228,7 @@ function play(song) {
     return;
   document.title = basename(song);
   $audio.attr('src', song);
-  console.log('song ' + playlistpos + ' of ' + playlist.length);
+  debug('song ' + playlistpos + ' of ' + playlist.length);
   $audio[0].pause();
   $audio[0].play();
 }

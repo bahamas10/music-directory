@@ -82,7 +82,7 @@ pre {
 	line-height: 2;
 }
 
-.dark {
+blockquote, .dark {
 	color: #777;
 }
 

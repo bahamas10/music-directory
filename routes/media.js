@@ -38,7 +38,7 @@ function media(req, res) {
     function onmetadata(metadata) {
       // just send the tags, no picture
       if (tags) {
-        delete metadata.picture;
+        metadata.picture = Object.keys(metadata.picture).length ? true : false;
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.end(JSON.stringify(metadata));
         return;
