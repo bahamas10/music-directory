@@ -68,9 +68,11 @@ $(document).ready(function() {
 // play the song on dbl click
 function dbllinkclick() {
   var $this = $(this);
-  var href= $this.attr('href') || $this.attr('data-href');
   var isfile = $this.attr('data-isdir') === 'false';
-  if (isfile) play(href);
+  if (!isfile) return;
+
+  var href= $this.attr('href') || $this.attr('data-href');
+  play(href);
 }
 
 // single click, load some stuff
@@ -237,6 +239,7 @@ function loadlocation(loc) {
   }
 }
 
+// play a song number or url
 function play(song) {
   if (typeof song === 'number')
     song = '/media' + playlist[song];
@@ -244,17 +247,28 @@ function play(song) {
     playlistpos = playlist.indexOf(song.replace('/media', ''));
   else
     return;
-  document.title = basename(song);
+  var songname = basename(song);
+  document.title = songname
   $audio.attr('src', song);
   debug('song ' + playlistpos + ' of ' + playlist.length);
   $audio[0].pause();
   $audio[0].play();
+
+  // get the tags and set the title
+  $.getJSON(song + '?tags=true', function(data) {
+    var s = '';
+    if (data.title) s += data.title;
+    if (data.artist.length) s = data.artist[0] + ' - ' + s;
+    if (!s) s = songname;
+    document.title = s;
+  });
 }
 
+// prev track
+function prev() {
+  play(--playlistpos);
+}
+// next track
 function next() {
   play(++playlistpos);
-}
-
-function showfileinfo(file) {
-
 }
