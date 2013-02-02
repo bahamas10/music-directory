@@ -1,9 +1,12 @@
-var $container, $footer, $audio;
+var $container, $footer, $audio, $body;
 var $rightarrow;
+var $pullmenu;
 
 var viewstack = [];
 var playlist = [];
 var playlistpos = -1;
+
+var footerheight = 300;
 
 var cache = new BasicCache();
 
@@ -20,6 +23,8 @@ $(document).ready(function() {
   $container = $('#container');
   $footer = $('#footer');
   $rightarrow = $('#right-arrow');
+  $pullmenu = $('#footer .pull-menu');
+  $body = $('body');
 
   // override all linksss
   $container.on('click', '.column a', linkclick);
@@ -38,6 +43,20 @@ $(document).ready(function() {
     debug(e);
   });
 
+  $pullmenu.click(function() {
+    var $this = $(this);
+    var isup = $this.hasClass('up');
+
+    $footer.animate({height: (isup ? '+=' : '-=') + footerheight + 'px'}, 'slow', function() {
+      if (isup) {
+        $this.removeClass('up').addClass('down');
+        $this.html('&darr;');
+      } else {
+        $this.removeClass('down').addClass('up');
+        $this.html('&uarr;');
+      }
+    });
+  });
   $rightarrow.click(function() {
     debug('right arrow');
     loadlocation($audio.attr('src'));
@@ -121,6 +140,7 @@ function createcolumn(data, type, href) {
         $a.attr('data-isdir', o.isdir);
         $a.text(basename(o.filename));
         $a.attr('title', $a.text());
+        $a.addClass('not-selectable');
 
         // dirs have arrows
         if (o.isdir) $a.addClass('arrow');

@@ -43,10 +43,6 @@ a {
 	border-bottom: 1px solid #999;
 	color: #dcdcdc;
 
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	user-select: none;
 }
 .column a.current {
 	background-color: #333;
@@ -97,4 +93,10 @@ blockquote, .dark {
 }
 .float-right {
 	float: right;
+}
+.not-selectable {
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
