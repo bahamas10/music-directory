@@ -23,6 +23,7 @@ $(document).ready(function() {
 
   // override all linksss
   $container.on('click', '.column a', linkclick);
+  $container.on('dblclick', '.column a', dbllinkclick);
 
   // load the playlist
   $.getJSON('/api/cache', function(data) {
@@ -43,9 +44,15 @@ $(document).ready(function() {
   });
 });
 
-/**
- * when a link is clicked in the UI
- */
+// play the song on dbl click
+function dbllinkclick() {
+  var $this = $(this);
+  var href= $this.attr('href') || $this.attr('data-href');
+  var isfile = $this.attr('data-isdir') === 'false';
+  if (isfile) play(href);
+}
+
+// single click, load some stuff
 function linkclick() {
   var $this = $(this);
 
@@ -69,7 +76,6 @@ function linkclick() {
   debug('click: %s', type);
   switch (type) {
     case 'file':
-      play(href);
       url = href + '?tags=true';
     case 'dir':
       url = url || (href + '?json=true');
