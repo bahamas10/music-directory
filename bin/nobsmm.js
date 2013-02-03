@@ -6,12 +6,16 @@
  * License: MIT
  */
 
+var path = require('path');
+
 var getopt = require('posix-getopt');
 
 var package = require('../package.json');
 
-var host = '0.0.0.0';
-var port = 8080;
+var defaults = {
+  host: '0.0.0.0',
+  port: 8080
+};
 
 /**
  * Usage
@@ -24,6 +28,7 @@ function usage() {
     '',
     'music',
     '',
+    '-c, --config <file>   optional config file to use, same as NODE_CONFIG env variable',
     '-d, --dir <dir>       the music directory to expose, defaults to cwd',
     '-h, --help            print this message and exit',
     '-H, --host <host>     the host on which to listen, defaults to ' + host,
@@ -35,6 +40,7 @@ function usage() {
 
 // command line arguments
 var options = [
+  'c:(config)',
   'd:(dir)',
   'h(help)',
   'H:(host)',
@@ -44,9 +50,12 @@ var options = [
 ].join('');
 var parser = new getopt.BasicParser(options, process.argv);
 var dir;
+var host;
+var port;
 var option;
 while ((option = parser.getopt()) !== undefined) {
   switch (option.option) {
+    case 'c': process.env.NODE_CONFIG = option.optarg; break;
     case 'd': dir = option.optarg; break;
     case 'h': console.log(usage()); process.exit(0);
     case 'H': host = option.optarg; break;
@@ -63,8 +72,13 @@ while ((option = parser.getopt()) !== undefined) {
 }
 var args = process.argv.slice(parser.optind());
 
+// grab the config if supplied
+process.env.NODE_CONFIG = path.resolve(process.env.NODE_CONFIG);
+var config = require('../lib/config');
+
 // if the user supplied a dir, what better way to test its validity than by
 // trying to go there
+var dir = dir || config.music;
 if (dir) {
   try {
     process.chdir(dir);
@@ -80,6 +94,8 @@ require('log-timestamp');
 
 // start the server what's up
 var server = require('../server');
-server.listen(port, host, function() {
-  console.log('server started: http://%s:%d/', host, port);
+var lport = config.web.port || port || defaults.port;
+var lhost = config.web.host || host || defaults.host;
+server.listen(lport, lhost, function() {
+  console.log('server started: http://%s:%d/', lhost, lport);
 });
