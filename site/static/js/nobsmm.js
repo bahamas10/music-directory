@@ -1,6 +1,5 @@
 var $container, $footer, $audio, $body;
-var $opennowplaying;
-var $pullmenu;
+var $opennowplaying, $pullmenu;
 var $csstheme, $csssize;
 
 var viewstack = [];
@@ -12,6 +11,8 @@ var footerheight = 200;
 var cache = new BasicCache();
 
 var verbose = true;
+
+var istouchdevice = !!('ontouchstart' in window) || !!('onmsgesturechange' in window);
 
 function debug() {
   if (verbose) console.log.apply(console, arguments);
@@ -32,7 +33,9 @@ $(document).ready(function() {
   // override all linksss
   $container.on('click', '.column a', linkclick);
   $container.on('dblclick', '.column a', dbllinkclick);
-  $container.on('touchstart', '.column a', dbllinkclick);
+
+  if (istouchdevice)
+    $container.on('click', '.column a', dbllinkclick);
 
   // load the playlist
   $.getJSON('/api/cache', function(data) {
@@ -53,7 +56,7 @@ $(document).ready(function() {
     var isup = $this.hasClass('up');
 
     var opts = {height: (isup ? '+=' : '-=') + footerheight + 'px'};
-    console.log(opts);
+    // slide the footer
     $footer.animate(opts, 'slow', function() {
       if (isup) {
         $this.removeClass('up').addClass('down');
@@ -67,13 +70,24 @@ $(document).ready(function() {
 
   // the now playing button
   $opennowplaying.click(function() {
-    debug('right arrow');
-    loadlocation($audio.attr('src'));
+    var src = istouchdevice ? dirname($audio.attr('src')) : $audio.attr('src');
+    loadlocation(src);
   });
 
   // theme and size chooser
-  $('#footer .css-size a').click(_themeclick('css-size'));
-  $('#footer .css-theme a').click(_themeclick('css-theme'));
+  var $sizeas = $('#footer .css-size a');
+  var $themeas = $('#footer .css-theme a');
+  $sizeas.click(_themeclick('css-size'));
+  $themeas.click(_themeclick('css-theme'));
+
+  // check local storage
+  var csssize = localStorage.getItem('css-size');
+  if (csssize)
+    $sizeas.each(function() { if ($(this).text() === csssize) $(this).trigger('click'); } )
+
+  var csstheme = localStorage.getItem('css-theme');
+  if (csstheme)
+    $themeas.each(function() { if ($(this).text() === csstheme) $(this).trigger('click'); } )
 });
 
 // theme and size callback
@@ -82,8 +96,11 @@ function _themeclick(type) {
     var $this = $(this);
     $this.parent().find('a').removeClass('current');
     $this.addClass('current');
+    var text = $this.text();
+
     var $elem = type === 'css-size' ? $csssize : $csstheme;
-    $elem.attr('href', '/static/css/' + $this.text() + '.css');
+    $elem.attr('href', '/static/css/' + text + '.css');
+    localStorage.setItem(type, text);
   };
 }
 
@@ -294,3 +311,4 @@ function prev() {
 function next() {
   play(++playlistpos);
 }
+
