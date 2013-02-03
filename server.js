@@ -13,7 +13,12 @@ function onrequest(req, res) {
   decorate(req, res);
 
   // check creds
-  //console.dir(req.credentials);
+  if (CONFIG.creds) {
+    var creds = req.credentials;
+    if (!creds) return fail(res);
+    if (creds.user !== CONFIG.creds.user) return setTimeout(function() { fail(res, creds); }, 3000);
+    if (creds.pass !== CONFIG.creds.pass) return setTimeout(function() { fail(res, creds); }, 3000);
+  }
 
   // route
   var route = router.match(req.urlparsed.pathname);
@@ -21,4 +26,11 @@ function onrequest(req, res) {
 
   // route it
   route.fn(req, res, route.params);
+}
+
+function fail(res, creds) {
+  if (creds) console.error('user failed auth: %s', creds.user);
+  res.setHeader('WWW-Authenticate', 'Basic realm="Auth Required"');
+  res.writeHead(401, 'Authentication required');
+  res.end();
 }

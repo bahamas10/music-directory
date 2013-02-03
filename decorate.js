@@ -48,12 +48,12 @@ function getcredentials(req) {
   var ret = null;
   try {
     var s = new Buffer(auth.split(' ')[1], 'base64').toString();
-    var split = str.split(':');
-    var user = sp[0];
-    var pass = sp[1];
+    var split = s.split(':');
+    var user = split[0];
+    var pass = split[1];
     ret = {
       user: user,
-      pss: pass
+      pass: pass
     };
   } catch (e) {}
   return ret;
