@@ -36,4 +36,25 @@ function decorate(req, res) {
     res.statusCode = 404;
     res.end();
   };
+
+  // check if a user/password was supplied
+  req.credentials = getcredentials(req);
+}
+
+function getcredentials(req) {
+  var auth = req.headers.authorization;
+  if (!auth || !auth.indexOf('Basic ') === 0) return null;
+
+  var ret = null;
+  try {
+    var s = new Buffer(auth.split(' ')[1], 'base64').toString();
+    var split = str.split(':');
+    var user = sp[0];
+    var pass = sp[1];
+    ret = {
+      user: user,
+      pss: pass
+    };
+  } catch (e) {}
+  return ret;
 }

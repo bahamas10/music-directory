@@ -38,6 +38,19 @@ function usage() {
   ].join('\n');
 }
 
+// grab the config if supplied
+function loadconfig(c) {
+  var config;
+  if (c) {
+    c = path.resolve(c);
+    config = require(c);
+  }
+  if (!config) config = {};
+  if (!config.web) config.web = {};
+
+  return config;
+}
+
 // command line arguments
 var options = [
   'c:(config)',
@@ -72,9 +85,9 @@ while ((option = parser.getopt()) !== undefined) {
 }
 var args = process.argv.slice(parser.optind());
 
-// grab the config if supplied
-process.env.NODE_CONFIG = path.resolve(process.env.NODE_CONFIG);
-var config = require('../lib/config');
+// load up the config and make that shit global
+var config = loadconfig(process.env.NODE_CONFIG);
+global.CONFIG = config;
 
 // if the user supplied a dir, what better way to test its validity than by
 // trying to go there

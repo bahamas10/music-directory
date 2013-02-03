@@ -12,6 +12,9 @@ function onrequest(req, res) {
   // add convenience functions and access logging
   decorate(req, res);
 
+  // check creds
+  //console.dir(req.credentials);
+
   // route
   var route = router.match(req.urlparsed.pathname);
   if (!route) return res.notfound();
