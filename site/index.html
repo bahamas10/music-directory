@@ -19,11 +19,16 @@
 				<a data-href="/about" class="arrow not-selectable">about</a>
 			</div>
 		</div>
-		<div id="footer" class="spacer">
-			<a class="pull-menu up">up</a>
-			<audio id="audio" preload="auto" controls autobuffer></audio>
-			<a class="open-now-playing">open now playing</a>
-			<br />
+		<div id="footer">
+			<a class="pull-menu up big">up</a>
+			<audio id="audio" preload="auto" controls autobuffer class="float-left"></audio>
+			<div class="small-info float-left"></div>
+			<div id="controls">
+				<a class="prev big">previous</a> |
+				<a class="now-playing big">now playing</a> |
+				<a class="next big">next</a>
+			</div>
+			<br class="clearer" />
 			<div class="css-size chooser">
 				<a>small</a>
 				<a class="current">normal</a>
@@ -34,6 +39,7 @@
 				<a>light</a>
 				<a class="current">dark</a>
 			</div>
+			<div class="info float-left"></div>
 		</div>
 	</body>
 </html>

@@ -20,6 +20,7 @@ function media(req, res) {
   var json = req.urlparsed.query.json === 'true';
   var tags = req.urlparsed.query.tags === 'true';
   var info = req.urlparsed.query.info === 'true';
+  var size = req.urlparsed.query.size;
 
   // the user wants tags or artwork, fire up musicmetadata
   if (tags || art || info) {
@@ -53,6 +54,7 @@ function media(req, res) {
 
       // html info in ejs format
       if (info) {
+        metadata.size = +size;
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.end(ejs.render(infotemplate, metadata));
         return;

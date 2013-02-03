@@ -63,6 +63,7 @@ a {
 	bottom: 0;
 	right: 0;
 	left: 0;
+	height: 30px;
 	width: 100%;
 	white-space: nowrap;
 }
@@ -70,14 +71,17 @@ a {
 #footer .pull-menu {
 	position: absolute;
 	left: 0;
+	top: 0;
 }
-#footer .open-now-playing {
-	position: absolute;
-	right: 0;
+#footer #controls {
+	float: right;
+}
+#footer #controls a {
+	margin: 0 10px;
 }
 
 #audio {
-	margin-left: 40px;
+	margin-left: 80px;
 /*	width: 100%;*/
 }
 
@@ -89,6 +93,7 @@ a {
 .big-arrow {
 	font-size: 25pt;
 }
+
 
 pre {
 	overflow-x: auto;
@@ -121,9 +126,15 @@ ul {
 .float-right {
 	float: right;
 }
+.clearer {
+	clear: both;
+}
 .not-selectable {
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
+}
+.big {
+	font-size: 25px;
 }

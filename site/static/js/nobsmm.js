@@ -1,12 +1,12 @@
 var $container, $footer, $audio, $body;
-var $opennowplaying, $pullmenu;
+var $controls, $pullmenu, $info, $smallinfo;
 var $csstheme, $csssize;
 
 var viewstack = [];
 var playlist = [];
 var playlistpos = -1;
 
-var footerheight = 200;
+var footerheight = 220;
 
 var cache = new BasicCache();
 
@@ -24,10 +24,17 @@ $(document).ready(function() {
   $audio = $('#audio');
   $body = $('body');
   $container = $('#container');
+  $controls = {
+    dom: $('#controls'),
+    prev: $('#controls .prev'),
+    nowplaying: $('#controls .now-playing'),
+    next: $('#controls .next')
+  };
+  $smallinfo = $('#footer .small-info');
+  $info = $('#footer .info');
   $csssize = $('#css-size');
   $csstheme = $('#css-theme');
   $footer = $('#footer');
-  $opennowplaying = $('#footer .open-now-playing');
   $pullmenu = $('#footer .pull-menu');
 
   // override all linksss
@@ -53,12 +60,13 @@ $(document).ready(function() {
   // the pull down/up menu for the footer
   $pullmenu.click(function() {
     var $this = $(this);
-    var isup = $this.hasClass('up');
+    var isdown = $this.hasClass('up');
 
-    var opts = {height: (isup ? '+=' : '-=') + footerheight + 'px'};
+    var opts = {height: (isdown ? '+=' : '-=') + footerheight + 'px'};
     // slide the footer
     $footer.animate(opts, 'slow', function() {
-      if (isup) {
+      resetspacers();
+      if (isdown) {
         $this.removeClass('up').addClass('down');
         $this.text('down');
       } else {
@@ -69,10 +77,13 @@ $(document).ready(function() {
   });
 
   // the now playing button
-  $opennowplaying.click(function() {
+  $controls.dom.hide();
+  $controls.nowplaying.click(function() {
     var src = istouchdevice ? dirname($audio.attr('src')) : $audio.attr('src');
     loadlocation(src);
   });
+  $controls.prev.click(prev);
+  $controls.next.click(next);
 
   // theme and size chooser
   var $sizeas = $('#footer .css-size a');
@@ -231,7 +242,14 @@ function addcolumn($column, num) {
   $column.data('num', viewstack.length);
   $container.append($column);
   scroll($column.width() * viewstack.length);
+  resetspacers();
+
   debug('pushing num %d onto stack', viewstack.length);
+}
+
+function resetspacers() {
+  // is the pull menu up?
+  $('.spacer').css({height: $footer.height() + 'px'});
 }
 
 // ghetto basename & dirname
@@ -286,13 +304,15 @@ function play(song) {
     playlistpos = playlist.indexOf(song.replace('/media', ''));
   else
     return;
+
   var songname = basename(song);
   document.title = songname
   $audio.attr('src', song);
+  $controls.dom.show();
   debug('song ' + playlistpos + ' of ' + playlist.length);
+
   $audio[0].pause();
   $audio[0].play();
-
   // get the tags and set the title
   $.getJSON(song + '?tags=true', function(data) {
     var s = '';
@@ -300,6 +320,12 @@ function play(song) {
     if (data.artist.length) s = data.artist[0] + ' - ' + s;
     if (!s) s = songname;
     document.title = s;
+    $smallinfo.text(s);
+  });
+
+  // set the now playing thing in the pull menu
+  $.get(song + '?info=true&size=200', function(data) {
+    $info.html(data);
   });
 }
 

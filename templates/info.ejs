@@ -1,10 +1,11 @@
 <% if (haspicture) { %>
-<div style="text-align: center">
-<img src="<%= request %>?art=true" width="300" height="300px"></img>
+<% if (!size) { size = 300 } %>
+<div style="text-align: center; float: left;">
+<img src="<%= request %>?art=true" width="<%= size %>" height="<%= size %>"></img>
 </div>
 <% } %>
 
-<pre>
+<pre style="float: left; padding: 10px;">
 <% if (title) { %>
 
 <%= title %><br />
