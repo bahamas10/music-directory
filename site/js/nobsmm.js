@@ -6,7 +6,7 @@ var viewstack = [];
 var playlist = [];
 var playlistpos = -1;
 
-var footerheight = 220;
+var footerheight = 210;
 
 var cache = new BasicCache();
 
