@@ -5,7 +5,9 @@ module.exports = router;
 router.addRoute('/', require('./routes/index'));
 
 var _static = require('./routes/static');
-router.addRoute('/static/*?', _static);
+router.addRoute('/css/*?', _static);
+router.addRoute('/js/*?', _static);
+router.addRoute('/third-party/*?', _static);
 router.addRoute('/favicon.ico', _static);
 
 router.addRoute('/media/*?', require('./routes/media'));

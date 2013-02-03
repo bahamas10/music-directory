@@ -130,11 +130,11 @@ function media(req, res) {
 
 // given an array of stats objects, return some pretty HTML
 function createprettyhtml(stats) {
-  var s = '<!doctype html><html><head><link rel="stylesheet" href="/static/css/media.css" />';
+  var s = '<!doctype html><html><head><link rel="stylesheet" href="/css/style.css" />';
   s += '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />';
-  s += '</head><body><div id="container">';
+  s += '</head><body><div id="container"><div class="column">';
 
-  var link = '<a href="%s">%s</a><br />\n';
+  var link = '<a href="%s">%s</a>\n';
   s += util.format(link, '../', '../');
   stats.forEach(function(stat) {
     var url = '/media' + stat.filename.replace(/#/g, '%23');
@@ -146,7 +146,7 @@ function createprettyhtml(stats) {
     s += util.format(link, url, name);
   });
 
-  s += '</div></body></html>';
+  s += '</div></div></body></html>';
 
   return s;
 }

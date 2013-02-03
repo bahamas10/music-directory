@@ -110,7 +110,7 @@ function _themeclick(type) {
     var text = $this.text();
 
     var $elem = type === 'css-size' ? $csssize : $csstheme;
-    $elem.attr('href', '/static/css/' + text + '.css');
+    $elem.attr('href', '/css/' + text + '.css');
     localStorage.setItem(type, text);
   };
 }
