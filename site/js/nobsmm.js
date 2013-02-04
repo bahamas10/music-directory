@@ -13,6 +13,7 @@ var cache = new BasicCache();
 var verbose = true;
 
 var istouchdevice = !!('ontouchstart' in window) || !!('onmsgesturechange' in window);
+debug('is touch device: ' + istouchdevice);
 
 function debug() {
   if (verbose) console.log.apply(console, arguments);
@@ -121,7 +122,6 @@ function dbllinkclick() {
   var isfile = $this.attr('data-isdir') === 'false';
   if (!isfile) return;
 
-  window.webkitNotifications.requestPermission();
   var href= $this.attr('href') || $this.attr('data-href');
   play(href);
 }
