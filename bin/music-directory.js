@@ -31,8 +31,8 @@ function usage() {
     '-c, --config <file>   optional config file to use, same as NODE_CONFIG env variable',
     '-d, --dir <dir>       the music directory to expose, defaults to cwd',
     '-h, --help            print this message and exit',
-    '-H, --host <host>     the host on which to listen, defaults to ' + host,
-    '-p, --port <port>     the port on which to listen, defaults to ' + port,
+    '-H, --host <host>     the host on which to listen, defaults to ' + defaults.host,
+    '-p, --port <port>     the port on which to listen, defaults to ' + defaults.port,
     '-u, --updates         check for available updates',
     '-v, --version         print the version number and exit'
   ].join('\n');
@@ -104,6 +104,9 @@ if (dir) {
 
 // let's get rollin
 require('log-timestamp');
+require('latest').checkupdate(package, function(ret, msg) {
+  console.log(msg);
+});
 
 // start the server what's up
 var server = require('../server');

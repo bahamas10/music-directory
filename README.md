@@ -36,8 +36,8 @@ open a browser and navigation to [http://localhost:8080][1] to see this site in 
     -c, --config <file>   optional config file to use, same as NODE_CONFIG env variable
     -d, --dir <dir>       the music directory to expose, defaults to cwd
     -h, --help            print this message and exit
-    -H, --host <host>     the host on which to listen, defaults to undefined
-    -p, --port <port>     the port on which to listen, defaults to undefined
+    -H, --host <host>     the host on which to listen, defaults to 0.0.0.0
+    -p, --port <port>     the port on which to listen, defaults to 8080
     -u, --updates         check for available updates
     -v, --version         print the version number and exit
 
