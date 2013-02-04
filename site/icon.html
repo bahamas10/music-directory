@@ -1,0 +1,57 @@
+<!doctype html >
+<html>
+	<head>
+		<link rel="stylesheet" href="/css/style.css" />
+	</head>
+	<style>
+		#img {
+			position: absolute;
+			top: 30px;
+			right: 0;
+			left: 0;
+		}
+	</style>
+	<script>
+		var canvas, ctx;
+
+		window.addEventListener('load', init);
+		function init() {
+			canvas = document.createElement('canvas');
+			ctx = canvas.getContext('2d');
+
+			canvas.height = 120;
+			canvas.width = 120;
+
+			// background
+			ctx.fillStyle = '#111';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+			// border
+			ctx.strokeStyle = '#ccc';
+			ctx.strokeRect(5, 5, 110, 110);
+
+			// music
+			ctx.fillStyle = '#ccc';
+			ctx.font = '70px Courier New';
+			ctx.fillText('md', 9, 55);
+			ctx.font = '21px Courier New';
+			ctx.fillText('music', 44, 82);
+			ctx.moveTo(7, 90);
+			ctx.lineTo(113, 90);
+			ctx.stroke();
+
+			// directory
+			ctx.fillStyle = '#ccc';
+			ctx.font = '19px Courier New';
+			ctx.fillText('directory', 9, 108);
+
+			// now make the image
+			var img = document.getElementById('img');
+			img.src = canvas.toDataURL();
+		}
+	</script>
+	<body>
+		<img id="img"></img>
+	</html>
+</html>

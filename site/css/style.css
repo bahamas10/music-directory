@@ -104,6 +104,10 @@ pre {
 blockquote, .dark {
 	color: #777;
 }
+blockquote {
+	margin: 1px;
+	font-size: 8pt;
+}
 
 ul {
 	list-style: none;
