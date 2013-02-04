@@ -8,6 +8,7 @@ var _static = require('./routes/static');
 router.addRoute('/css/*?', _static);
 router.addRoute('/favicon.ico', _static);
 router.addRoute('/icon.html', _static);
+router.addRoute('/icon.png', _static);
 router.addRoute('/js/*?', _static);
 router.addRoute('/third-party/*?', _static);
 
