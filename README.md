@@ -5,6 +5,8 @@ Serve your music over the web with a nice UI, or as JSON
 
 ** still in beta, only tested on chrome **
 
+![icon](/site/icon.png)
+
 Installation
 ------------
 
