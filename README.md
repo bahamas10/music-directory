@@ -25,7 +25,7 @@ run `md` on the command line to fire up a server on `0.0.0.0` port `8080`.
 By default, `md` will serve out of your current working directory.  the above command
 will scan your current directory for music files, and build a local cache.
 
-open a browser and navigation to http://localhost:8080 to see this site in action.
+open a browser and navigation to [http://localhost:8080][1] to see this site in action.
 
     Usage: md [-d directory] [-c config]
 
@@ -61,7 +61,7 @@ Various API calls
 Your media as it lives on the filesystem
 
 - `/media/My Music`: generate a simple HTML index page for your directory
-- `/media/My Music?jso=true`: expose the directory as json
+- `/media/My Music?json=true`: expose the directory as json
 - `/media/My Music/mysong.mp3`: stream an mp3
 - `/media/My Music/mysong.mp3?tags=true`: send the music tags as JSON
 - `/media/My Music/mysong.mp3?art=true`: send the embedded album art if present
@@ -71,4 +71,6 @@ License
 -------
 
 MIT
+
 [0]: http://nodejs.org
+[1]: http://localhost:8080
