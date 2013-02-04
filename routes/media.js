@@ -32,6 +32,7 @@ function media(req, res) {
       var parser = new musicmetadata(rs);
       parser.on('metadata', onmetadata);
     } catch (e) {
+      rs.destroy();
       console.error('error opening <%s> for metadata', file);
       console.error(e);
       res.error();
@@ -40,6 +41,7 @@ function media(req, res) {
 
     // music metadata callback
     function onmetadata(metadata) {
+      rs.destroy();
       metadata.request = req.urlparsed.pathname;
       metadata.basename = path.basename(req.urlparsed.pathname);
       metadata.haspicture = Object.keys(metadata.picture).length ? true : false;
@@ -103,7 +105,9 @@ function media(req, res) {
         if (req.method === 'HEAD') {
           res.end();
         } else {
-          fs.createReadStream(file).pipe(res);
+          var rs = fs.createReadStream(file);
+          rs.pipe(res);
+          res.on('close', rs.destroy.bind(rs));
         }
       }
       return;
