@@ -24,9 +24,9 @@ var defaults = {
  */
 function usage() {
   return [
-    'Usage: nobsmm',
+    'Usage: md [-d directory] [-c config]',
     '',
-    'music',
+    'Serve your music over the web with a nice UI, or as JSON',
     '',
     '-c, --config <file>   optional config file to use, same as NODE_CONFIG env variable',
     '-d, --dir <dir>       the music directory to expose, defaults to cwd',
