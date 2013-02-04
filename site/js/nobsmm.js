@@ -121,6 +121,7 @@ function dbllinkclick() {
   var isfile = $this.attr('data-isdir') === 'false';
   if (!isfile) return;
 
+  window.webkitNotifications.requestPermission();
   var href= $this.attr('href') || $this.attr('data-href');
   play(href);
 }
@@ -321,6 +322,7 @@ function play(song) {
     if (!s) s = songname;
     document.title = s;
     $smallinfo.text(s);
+    notify('now playing', s, song.slice(1) + '?art=true');
   });
 
   // set the now playing thing in the pull menu
