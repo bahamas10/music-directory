@@ -96,7 +96,6 @@ a {
 
 
 pre {
-	overflow-x: auto;
 	white-space: normal;
 	line-height: 2;
 }
@@ -106,7 +105,7 @@ blockquote, .dark {
 }
 blockquote {
 	margin: 1px;
-	font-size: 8pt;
+	white-space: normal;
 }
 
 ul {
@@ -121,6 +120,13 @@ ul {
 	float: left;
 	width: 120px;
 	margin: 20px 10px;
+}
+
+.md-icon {
+	float: right;
+	display: inline;
+	padding: 0;
+	border: none !important;
 }
 
 /* convenience */

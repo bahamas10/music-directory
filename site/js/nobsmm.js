@@ -130,7 +130,8 @@ function dbllinkclick() {
 function linkclick() {
   var $this = $(this);
 
-  var href= $this.attr('href') || $this.attr('data-href');
+  var href= $this.attr('data-href');
+  if (!href) return true;
   var isdir = $this.attr('data-isdir') === 'true';
   var isfile = $this.attr('data-isdir') === 'false';
 
