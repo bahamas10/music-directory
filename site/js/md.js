@@ -132,6 +132,7 @@ function linkclick() {
 
   var href= $this.attr('data-href');
   if (!href) return true;
+  href = href.replace(/#/g, '%23');
   var isdir = $this.attr('data-isdir') === 'true';
   var isfile = $this.attr('data-isdir') === 'false';
 
@@ -306,17 +307,18 @@ function play(song) {
     playlistpos = playlist.indexOf(song.replace('/media', ''));
   else
     return;
+  var songwebsafe = song.replace(/#/g, '%23');
 
   var songname = basename(song);
   document.title = songname
-  $audio.attr('src', song);
+  $audio.attr('src', songwebsafe);
   $controls.dom.show();
   debug('song ' + playlistpos + ' of ' + playlist.length);
 
   $audio[0].pause();
   $audio[0].play();
   // get the tags and set the title
-  $.getJSON(song + '?tags=true', function(data) {
+  $.getJSON(songwebsafe + '?tags=true', function(data) {
     var s = '';
     if (data.title) s += data.title;
     if (data.artist.length) s = data.artist[0] + ' - ' + s;
@@ -327,7 +329,7 @@ function play(song) {
   });
 
   // set the now playing thing in the pull menu
-  $.get(song + '?info=true&size=200', function(data) {
+  $.get(songwebsafe + '?info=true&size=200', function(data) {
     $info.html(data);
   });
 }
