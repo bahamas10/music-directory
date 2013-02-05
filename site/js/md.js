@@ -321,7 +321,7 @@ function play(song) {
   $.getJSON(songwebsafe + '?tags=true', function(data) {
     var s = '';
     if (data.title) s += data.title;
-    if (data.artist.length) s = data.artist[0] + ' - ' + s;
+    if (data.artist.length) s += ' - ' + data.artist[0];
     if (!s) s = songname;
     document.title = s;
     $smallinfo.text(s);
