@@ -100,6 +100,9 @@ $(document).ready(function() {
   var csstheme = localStorage.getItem('css-theme');
   if (csstheme)
     $themeas.each(function() { if ($(this).text() === csstheme) $(this).trigger('click'); } )
+
+  // mousetrap
+  Mousetrap.bind('space', toggle);
 });
 
 // theme and size callback
@@ -347,3 +350,13 @@ function next() {
   play(++playlistpos);
 }
 
+// toggle play/pause
+function toggle() {
+  var audio = $audio[0];
+  if (audio.paused) {
+    audio.play();
+  } else {
+    audio.pause();
+  }
+  console.log('music is now ' + ((audio.paused) ? 'paused' : 'playing'));
+}
