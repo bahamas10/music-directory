@@ -74,6 +74,7 @@ You can also specify the `NODE_CONFIG` env variable instead of passing in `-c`
 - `web.key`: if ssl is enabled, this attribute should be the path to a key file
 - `web.cert`: if ssl is enabled, this attribute should be the path to a cert file
 
+
 - `creds`: if this key is present, authentication will be used (basic http auth)
 - `creds.user`: the username to use during authentication
 - `creds.pass`: the password to use during authentication
