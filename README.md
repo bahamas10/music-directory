@@ -7,6 +7,14 @@ Serve your music over the web with a nice UI, or as JSON
 
 ![icon](/site/icon.png)
 
+Screenshots
+-----------
+
+![about](/screenshots/about.png)
+![art](/screenshots/art.png)
+![pullmenu](/screenshots/pullmenu.png)
+![light](/screenshots/light.png)
+
 Installation
 ------------
 
