@@ -3,7 +3,7 @@ music-directory
 
 Serve your music over the web with a nice UI, or as JSON
 
-** still in beta, only tested on chrome **
+*still in beta, only tested on chrome*
 
 ![icon](/site/icon.png)
 
@@ -40,6 +40,59 @@ open a browser and navigation to [http://localhost:8080][1] to see this site in 
     -p, --port <port>     the port on which to listen, defaults to 8080
     -u, --updates         check for available updates
     -v, --version         print the version number and exit
+
+Configuration
+-------------
+
+You may specify a config file to use with `-c <file>`.  Any values in this config file
+will override the application defaults, but can be overridden still with command line
+arguments.
+
+You can also specify the `NODE_CONFIG` env variable instead of passing in `-c`
+
+`config.json`
+``` json
+{
+  "web": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "ssl": false,
+    "key": "./my.key",
+    "cert": "./my.crt"
+  },
+  "creds": {
+    "user": "dave",
+    "pass": "secret"
+  },
+  "music": "./"
+}
+```
+
+- `web.host`: the host on which to listen, defaults to `0.0.0.0`
+- `web.port`: the port on which to listen, defaults to `8080`
+- `web.ssl`: if this key is present and set to `true`, an SSL server will be used, defaults to `false`
+- `web.key`: if ssl is enabled, this attribute should be the path to a key file
+- `web.cert`: if ssl is enabled, this attribute should be the path to a cert file
+
+- `creds`: if this key is present, authentication will be used (basic http auth)
+- `creds.user`: the username to use during authentication
+- `creds.pass`: the password to use during authentication
+
+*note:* this is subject to change as a stronger form of authentication will be implemented
+
+- `music`: the music directory from which to server, can be overridden with `-d <dir>`, and defaults to the current working directory
+
+SSL
+---
+
+Pass in a config file with `web.ssl` set to `true` to run an SSL server instead of a standard
+http server.  You can easily generate a self-signed cert/key combo with the following commands
+
+    openssl genrsa -out my.key 4096
+    openssl req -new -x509 -days 1826 -key my.key -out my.crt
+
+These 2 commands will create `my.key` and `my.crt`, which can be passed in with the config
+to fire up a secure server.
 
 API
 ---
