@@ -1,6 +1,6 @@
 {
   "name": "music-directory",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Serve your music over the web with a nice UI, or as JSON",
   "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
   "main": "server.js",
