@@ -68,19 +68,21 @@ You can also specify the `NODE_CONFIG` env variable instead of passing in `-c`
 }
 ```
 
+##### web
 - `web.host`: the host on which to listen, defaults to `0.0.0.0`
 - `web.port`: the port on which to listen, defaults to `8080`
 - `web.ssl`: if this key is present and set to `true`, an SSL server will be used, defaults to `false`
 - `web.key`: if ssl is enabled, this attribute should be the path to a key file
 - `web.cert`: if ssl is enabled, this attribute should be the path to a cert file
 
-
+##### creds
 - `creds`: if this key is present, authentication will be used (basic http auth)
 - `creds.user`: the username to use during authentication
 - `creds.pass`: the password to use during authentication
 
 *note:* this is subject to change as a stronger form of authentication will be implemented
 
+##### music
 - `music`: the music directory from which to server, can be overridden with `-d <dir>`, and defaults to the current working directory
 
 SSL
