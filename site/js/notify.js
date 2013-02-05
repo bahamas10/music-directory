@@ -1,8 +1,12 @@
 function notify(title, content, icon) {
-  if (!window.webkitNotifications) return
+  if (!window.webkitNotifications) return;
 
-  if (window.webkitNotifications.checkPermission() !== 0)
-    return window.webkitNotifications.requestPermission();
+  var permissions = window.webkitNotifications.checkPermission();
+  if (permissions !== 0) {
+    console.log('improper permissions: ' + permissions);
+    window.webkitNotifications.requestPermission(notify.bind(this, arguments));
+    return;
+  }
 
   var notification = window.webkitNotifications.createNotification(icon, title, content);
   // timeout the notification

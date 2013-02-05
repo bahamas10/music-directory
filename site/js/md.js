@@ -128,6 +128,10 @@ function dbllinkclick() {
 
 // single click, load some stuff
 function linkclick() {
+  if (window.webkitNotifications && window.webkitNotifications.checkPermission() === 1) {
+    console.log('asking for notifications permission');
+    webkitNotifications.requestPermission();
+  }
   var $this = $(this);
 
   var href= $this.attr('data-href');
