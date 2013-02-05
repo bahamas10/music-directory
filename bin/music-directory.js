@@ -113,5 +113,6 @@ var server = require('../server');
 var lport = config.web.port || port || defaults.port;
 var lhost = config.web.host || host || defaults.host;
 server.listen(lport, lhost, function() {
-  console.log('server started: http://%s:%d/', lhost, lport);
+  var proto = config.web.ssl ? 'https' : 'http';
+  console.log('server started: %s://%s:%d/', proto, lhost, lport);
 });

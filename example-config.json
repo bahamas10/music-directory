@@ -1,0 +1,14 @@
+{
+  "web": {
+    "host": "0.0.0.0",
+    "port": 8081,
+    "ssl": false,
+    "key": "./ca.key",
+    "cert": "./ca.crt"
+  },
+  "creds": {
+    "user": "dave",
+    "pass": "secret"
+  },
+  "music": "./"
+}

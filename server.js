@@ -1,10 +1,18 @@
-var http = require('http');
+var fs = require('fs');
 
 var decorate = require('./decorate');
 var router = require('./router');
 
-// create the server
-var server = http.createServer(onrequest);
+var opts = {};
+if (CONFIG.web.ssl) {
+  opts.key = fs.readFileSync(CONFIG.web.key),
+  opts.cert = fs.readFileSync(CONFIG.web.cert)
+}
+
+var server = CONFIG.web.ssl
+           ? require('https').createServer(opts, onrequest)
+           : require('http').createServer(onrequest);
+
 module.exports = server;
 
 // request recieved
