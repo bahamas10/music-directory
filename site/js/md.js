@@ -142,6 +142,9 @@ function linkclick() {
   href = href.replace(/#/g, '%23');
   var isdir = $this.attr('data-isdir') === 'true';
   var isfile = $this.attr('data-isdir') === 'false';
+  var clearcache = $this.attr('data-clear-cache') === 'true';
+
+  if (clearcache) cache.clear();
 
   var $parent = $this.parent();
   var num = $parent.data('num');
