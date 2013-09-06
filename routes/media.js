@@ -94,9 +94,36 @@ function media(req, res) {
       res.setHeader('Last-Modified', stats.mtime);
 
       // check cache
+      var range = req.headers.range;
       if (req.headers['if-none-match'] === etag) {
         res.statusCode = 304;
         res.end();
+      } else if (range) {
+        var parts = range.replace(/bytes=/, '').split('-');
+        var partialstart = parts[0];
+        var partialend = parts[1];
+
+        var startrange = parseInt(partialstart, 10);
+        var endrange = partialend ? parseInt(partialend, 10) : stats.size - 1;
+        if (!startrange)
+          startrange = 0;
+        if (!endrange)
+          endrange = stats.size - 1;
+        var chunksize = endrange - startrange + 1;
+
+        res.statusCode = 206;
+        res.setHeader('Content-Range', 'bytes ' + startrange + '-' + endrange + '/' + stats.size);
+        res.setHeader('Accept-Ranges', 'bytes');
+        res.setHeader('Content-Length', chunksize);
+        res.setHeader('Content-Type', mime.lookup(file));
+        res.setHeader('ETag', etag);
+        if (req.method === 'HEAD') {
+          res.end();
+        } else {
+          var rs = fs.createReadStream(file, {start: startrange, end: endrange});
+          rs.pipe(res);
+          res.on('close', rs.destroy.bind(rs));
+        }
       } else {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Content-Length', stats.size);
