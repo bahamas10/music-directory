@@ -42,38 +42,31 @@ function media(req, res) {
     // music metadata callback
     function onmetadata(metadata) {
       rs.destroy();
+      metadata.picture = metadata.picture || [];
       metadata.request = req.urlparsed.pathname;
       metadata.basename = path.basename(req.urlparsed.pathname);
       metadata.haspicture = Object.keys(metadata.picture).length ? true : false;
 
-      // just send the tags, no picture
       if (tags) {
+        // just send the tags, no picture
         delete metadata.picture;
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.end(JSON.stringify(metadata));
-        return;
-      }
-
-      // html info in ejs format
-      if (info) {
+      } else if (info) {
+        // html info in ejs format
         metadata.size = +size;
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.end(ejs.render(infotemplate, metadata));
-        return;
-      }
+      } else if (art) {
+        // send the art only if present
+        var pic = metadata.picture[0];
+        if (!pic)
+          return res.notfound();
 
-      // send the art only if present
-      if (art) {
-        var pic;
-        try {
-          pic = metadata.picture[0];
-          if (!pic) throw new Error('picture not present');
-        } catch (e) {
-          res.notfound();
-          return;
-        }
         res.setHeader('Content-Type', 'image/' + (pic.format || 'xyz'));
         res.end(pic.data);
+      } else {
+        res.notfound();
       }
     }
 
