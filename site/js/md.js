@@ -203,7 +203,7 @@ function createcolumn(data, type, href) {
       for (var i in data) {
         var o = data[i];
         var $a = $(document.createElement('a'));
-        $a.attr('data-href', '/media' + o.filename);
+        $a.attr('data-href', '/media' + encodeURIComponent(o.filename).replace(/%2F/g, '/'));
         $a.attr('data-isdir', o.isdir);
         $a.text(basename(o.filename));
         $a.attr('title', $a.text());

@@ -168,7 +168,7 @@ function createprettyhtml(stats) {
   var link = '<a href="%s">%s</a>\n';
   s += util.format(link, '../', '../');
   stats.forEach(function(stat) {
-    var url = '/media' + stat.filename.replace(/#/g, '%23');
+    var url = '/media' + encodeURIComponent(stat.filename).replace(/%2F/g, '/');
     var name = path.basename(stat.filename);
     if (stat.isdir) {
       url += '/';
