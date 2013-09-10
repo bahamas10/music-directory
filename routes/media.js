@@ -13,7 +13,7 @@ module.exports = media;
 
 function media(req, res) {
   // map the request to a file on the filesystem
-  var reqfile = decodeURI(req.urlparsed.pathname.replace('/media', '')).replace(/%23/g, '#');
+  var reqfile = path.normalize(decodeURIComponent(req.urlparsed.pathname.replace('/media', '')));
   var file = path.join(process.cwd(), reqfile);
 
   var art = req.urlparsed.query.art === 'true';
