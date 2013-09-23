@@ -311,10 +311,11 @@ function loadlocation(loc) {
 
 // play a song number or url
 function play(song) {
+  console.log('song = ' + song);
   if (typeof song === 'number')
     song = '/media' + playlist[song];
   else if (typeof song === 'string')
-    playlistpos = playlist.indexOf(song.replace('/media', ''));
+    playlistpos = playlist.indexOf(decodeURIComponent(song.replace('/media', '')).replace(/%2F/g, '/'));
   else
     return;
   var songwebsafe = song.replace(/#/g, '%23');
