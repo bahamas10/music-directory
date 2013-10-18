@@ -27,7 +27,7 @@ a {
 }
 
 .column {
-	float: left;
+	display: inline-block;
 	border-right: 1px solid #aaa;
 	height: 100%;
 	width: 320px;
