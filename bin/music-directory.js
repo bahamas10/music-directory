@@ -45,8 +45,10 @@ function loadconfig(c) {
     c = path.resolve(c);
     config = require(c);
   }
-  if (!config) config = {};
-  if (!config.web) config.web = {};
+  if (!config)
+    config = {};
+  if (!config.web)
+    config.web = {};
 
   return config;
 }
@@ -103,7 +105,6 @@ if (dir) {
 }
 
 // let's get rollin
-require('log-timestamp');
 require('latest').checkupdate(package, function(ret, msg) {
   console.log(msg);
 });

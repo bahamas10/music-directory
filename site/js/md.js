@@ -16,7 +16,8 @@ var istouchdevice = !!('ontouchstart' in window) || !!('onmsgesturechange' in wi
 debug('is touch device: ' + istouchdevice);
 
 function debug() {
-  if (verbose) console.log.apply(console, arguments);
+  if (verbose)
+    console.log.apply(console, arguments);
 }
 
 $(document).ready(function() {
@@ -254,7 +255,7 @@ function addcolumn($column, num) {
   viewstack.push($column);
   $column.data('num', viewstack.length);
   $container.append($column);
-  scroll($column.width() * viewstack.length);
+  window.scroll($column.width() * viewstack.length, 0);
   resetspacers();
 
   debug('pushing num %d onto stack', viewstack.length);
@@ -278,26 +279,30 @@ function loadlocation(loc) {
   if (!loc) return;
   debug('loadlocation = %s', loc);
   var parts = loc.split('/').slice(1);
-  debug(parts.length);
+  debug('url has %d parts', parts.length);
 
   docolumn(0);
 
   function docolumn(i) {
-    if (i >= parts.length || !parts[i]) return;
+    if (i >= parts.length || !parts[i])
+      return;
     debug('doculumn(%d)', i);
-    var dir = parts[i];
+    var dir = decodeURIComponent(parts[i]);
 
     $('.column').eq(i).find('a').each(function() {
       var $this = $(this);
       var text = $this.text();
-      if (text !== dir) return;
-      debug('text = %s', dir);
+      if (text !== dir)
+        return;
+      debug('found text = %s', dir);
 
       this.scrollIntoView();
+
       // defer action
       $this.trigger('click');
       if (!$.active) {
-        return docolumn(i+1);
+        docolumn(i+1);
+        return;
       } else {
         debug('ajax was active, appending an ajax stop');
         $(document).one('ajaxStop', function() {
